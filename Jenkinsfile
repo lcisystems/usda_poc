@@ -22,7 +22,7 @@ pipeline {
                 if [ -d "$dir" ] 
                 then
                
-                    cp target/*-SNAPSHOT.jar artifacte 
+                    cp target/*-1.war artifacte 
                     cd artifacte 
                     git add . 
                     git commit -m "first commit"
@@ -36,7 +36,7 @@ pipeline {
                     git config --global user.name "lcisystems"
                     git config --global user.email "rzdin@lcisystems.com"
 
-                    cp target/*-SNAPSHOT.jar artifacte 
+                    cp target/*-1.war artifacte 
                     cd artifacte 
                     git add . 
                     git commit -m "first commit"
