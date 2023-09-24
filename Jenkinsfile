@@ -8,7 +8,7 @@ pipeline {
         //artifact upload bucket region. (optional)                    
         region1 = "us-east-2" 
         //aws credentials                    
-        aws_credential = "s3-profile" //aws credentials 
+        aws_credential = "AKIAZV7TJUOJ2BB7DWYG (s3-profile)" //aws credentials 
         // Dockerhub credentials to push and pull images. 
         DOCKERHUB_CREDENTIALS = "rzdin-dockerhub"
     }
