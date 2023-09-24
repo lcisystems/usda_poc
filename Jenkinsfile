@@ -8,7 +8,7 @@ pipeline {
         //artifact upload bucket region. (optional)                    
         region1 = "us-east-2" 
         //aws credentials                    
-        aws_credential = "AKIAZV7TJUOJ2BB7DWYG (s3-profile)" //aws credentials 
+        aws_credential = "s3-profile" //aws credentials 
         // Dockerhub credentials to push and pull images. 
         DOCKERHUB_CREDENTIALS = "rzdin-dockerhub"
     }
@@ -25,11 +25,11 @@ pipeline {
         }
         
   stage('Publish Artifact') {
-            steps {
-                script {
-                    withAWS(region:'us-east-1', credentials: ${aws_credential}) {
+          steps {
+            script {
+              withAWS(region:'us-east-1', credentials: ${aws_credential}) {
                         s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/*-1.war')
-                    }
+              }
            
         }
 
