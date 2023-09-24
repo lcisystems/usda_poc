@@ -53,7 +53,7 @@ pipeline {
             steps {
                script{// This is the script that build and push the Docker image of the application.
                  
-                        withRegistry( 'https://registry.hub.docker.com',  DOCKERHUB_CREDENTIALS ) {
+                        withDockerRegistry( 'https://registry.hub.docker.com',  DOCKERHUB_CREDENTIALS ) {
                         def app = docker.build("docker push nikhilnidhi/samplewebapp:latest", '.').push()
                }  
         // sh  'docker push nikhilnidhi/samplewebapp:latest'
