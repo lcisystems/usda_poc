@@ -52,7 +52,7 @@ pipeline {
           
           
         steps {
-        withDockerRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS}", url: "https://registry.hub.docker.com" ]) {
+        withRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS}", url: "https://registry.hub.docker.com" ]) {
           sh  'docker push nikhilnidhi/samplewebapp:latest'
         // sh  'docker push nikhilnidhi/samplewebapp:latest'
         //  sh  'docker push nikhilnidhi/samplewebapp:$BUILD_NUMBER' 
