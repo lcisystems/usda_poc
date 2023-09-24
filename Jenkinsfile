@@ -10,7 +10,7 @@ pipeline {
         //aws credentials                    
         aws_credential = "s3-profile" //aws credentials 
         // Dockerhub credentials to push and pull images. 
-        DOCKERHUB_CREDENTIALS = "rzdin-dockerhub"
+        DOCKERHUB_CREDENTIALS = "dockerhub"
     }
 	  tools
     {
@@ -48,16 +48,16 @@ pipeline {
           }
         }
      
-//   stage('Publish image to Docker Hub') {
+  stage('Publish image to Docker Hub') {
           
-//             steps {
-//         withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
-//           sh  'docker push nikhilnidhi/samplewebapp:latest'
-//         //  sh  'docker push nikhilnidhi/samplewebapp:$BUILD_NUMBER' 
-//         }
+            steps {
+        withDockerRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS}", url: "https://registry.hub.docker.com" ]) {
+        sh  'docker push nikhilnidhi/samplewebapp:latest'
+        //  sh  'docker push nikhilnidhi/samplewebapp:$BUILD_NUMBER' 
+        }
                   
-//           }
-//         }
+          }
+        }
      
 //       stage('Run Docker container on Jenkins Agent') {
              
