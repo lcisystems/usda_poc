@@ -14,40 +14,11 @@ pipeline {
         }
         
   stage('Publish Artifact') {
-             
             steps {
-                sh '''
-
-                dir=artifacte
-                if [ -d "$dir" ] 
-                then
-                    git config --global user.name "lcisystems"
-                    git config --global user.email "rzdin@lcisystems.com"
-                    cp target/*-1.war artifacte 
-                    cd artifacte 
-                    git add . 
-                    git commit -m "first commit"
-                    git branch -M main
-                   
-                    git push -u origin main
-
-                else 
-                    git clone https://github.com/lcisystems/artifacte.git
-                    cd artifacte
-                    git config --global user.name "lcisystems"
-                    git config --global user.email "rzdin@lcisystems.com"
-
-                    cp target/*-1.war artifacte 
-                    cd artifacte 
-                    git add . 
-                    git commit -m "first commit"
-                    git branch -M main
-                 
-                    git push -u origin main
-                fi 
-                
-                '''
-            }
+                script {
+                    withAWS(region:'us-east-1', credentials:'s3-profile') {
+                        s3Upload(file:'LoginWebApp-1.war', bucket:'my-bucket', path:'target/*-1.war')
+                    }
            
         }
 
