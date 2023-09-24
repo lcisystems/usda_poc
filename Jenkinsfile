@@ -27,7 +27,7 @@ pipeline {
   stage('Publish Artifact') {
           steps {
               sh'''
-               mv ./target/LoginWebApp-1.war  .
+               cp ./target/LoginWebApp-1.war  .
               '''
             
               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
