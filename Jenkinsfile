@@ -42,7 +42,7 @@ pipeline {
            steps {
               
                 sh 'docker build -t samplewebapp:latest .' 
-                sh 'docker tag samplewebapp nikhilnidhi/samplewebapp:latest'
+                sh 'docker tag samplewebapp rzdin/samplewebapp:latest'
                 //sh 'docker tag samplewebapp nikhilnidhi/samplewebapp:$BUILD_NUMBER'
                
           }
@@ -56,7 +56,7 @@ pipeline {
         script{// This is the script that build and push the Docker image of the application.
                  
                         docker.withRegistry( 'https://registry.hub.docker.com',  DOCKERHUB_CREDENTIALS ) {
-                        def app = docker.build("docker push nikhilnidhi/samplewebapp:latest", '.').push()
+                        def app = docker.build("docker push rzdin/samplewebapp:latest", '.').push()
                }           
            }
         // sh  'docker push nikhilnidhi/samplewebapp:latest'

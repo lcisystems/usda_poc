@@ -1,6 +1,6 @@
 FROM tomcat:latest
 
-LABEL maintainer="Nidhi Gupta"
+LABEL maintainer="Rana Ziauddin"
 
 ADD ./target/*-1.war /usr/local/tomcat/webapps/
 
