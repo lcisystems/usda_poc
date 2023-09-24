@@ -51,11 +51,9 @@ pipeline {
   stage('Publish image to Docker Hub') {
           
             steps {
-               script{// This is the script that build and push the Docker image of the application.
-                 
-                        withRegistry( 'https://registry.hub.docker.com',  "${DOCKERHUB_CREDENTIALS}" ) {
-                        def app = docker.build("docker push nikhilnidhi/samplewebapp:latest", '.').push()
-               }  
+              steps {
+        withDockerRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS}", url: "https://registry.hub.docker.com" ]) {
+          sh  'docker push nikhilnidhi/samplewebapp:latest'
         // sh  'docker push nikhilnidhi/samplewebapp:latest'
         //  sh  'docker push nikhilnidhi/samplewebapp:$BUILD_NUMBER' 
         }
