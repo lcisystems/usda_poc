@@ -26,10 +26,10 @@ pipeline {
         
   stage('Publish Artifact') {
           steps {
-            script {
+            
               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
                   s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/*-1.war')
-              }
+              
            
         }
 
