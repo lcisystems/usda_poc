@@ -52,8 +52,13 @@ pipeline {
           
           
         steps {
-        withRegistry([ credentialsId: "${DOCKERHUB_CREDENTIALS}", url: "https://registry.hub.docker.com" ]) {
-          sh  'docker push nikhilnidhi/samplewebapp:latest'
+
+        script{// This is the script that build and push the Docker image of the application.
+                 
+                        docker.withRegistry( 'https://registry.hub.docker.com',  DOCKERHUB_CREDENTIALS ) {
+                        def app = docker.build("docker push nikhilnidhi/samplewebapp:latest", '.').push()
+               }           
+           }
         // sh  'docker push nikhilnidhi/samplewebapp:latest'
         //  sh  'docker push nikhilnidhi/samplewebapp:$BUILD_NUMBER' 
         }
