@@ -21,7 +21,8 @@ pipeline {
                 dir=artifacte
                 if [ -d "$dir" ] 
                 then
-               
+                    git config --global user.name "lcisystems"
+                    git config --global user.email "rzdin@lcisystems.com"
                     cp target/*-1.war artifacte 
                     cd artifacte 
                     git add . 
