@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     withAWS(region:'us-east-1', credentials:'s3-profile') {
-                        s3Upload(file:'LoginWebApp-1.war', bucket:'my-bucket', path:'target/*-1.war')
+                        s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/*-1.war')
                     }
            
         }
