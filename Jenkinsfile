@@ -1,5 +1,16 @@
 pipeline {
     agent any
+    environment {
+        //artifact deployment S3 bucket.    
+        bucket = "confluence-assessments-task-4-enquizit-2022" 
+        //artifact deployment bucket region          
+        region = "us-east-1"  
+        //artifact upload bucket region. (optional)                    
+        region1 = "us-east-2" 
+        //aws credentials                    
+        aws_credential = "s3-profile" //aws credentials 
+        // Dockerhub credentials to push and pull images. 
+        DOCKERHUB_CREDENTIALS = "rzdin-dockerhub"
 	
 	  tools
     {
