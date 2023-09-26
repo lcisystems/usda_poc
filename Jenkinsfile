@@ -15,6 +15,7 @@ pipeline {
 	  tools
     {
        maven "Maven"
+       docker "Docker"
     }
  stages {
 	 stage('Execute Maven') {
