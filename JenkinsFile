@@ -64,7 +64,7 @@ pipeline {
                         spec:
                           containers:
                           - name: docker
-                            image: docker:19.03-dind
+                            image: docker:dind
                             command:
                             - sh
                             - -c
@@ -95,7 +95,7 @@ pipeline {
                         spec:
                           containers:
                           - name: docker
-                            image: docker:19.03-dind
+                            image: docker:dind
                             command:
                             - sh
                             - -c
