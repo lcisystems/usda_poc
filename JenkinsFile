@@ -19,7 +19,7 @@ spec:
     tty: true
     volumeMounts:
       - mountPath: "/root/.m2"
-        name: m2
+        name: efs-jenkins
   - name: docker
     image: docker:latest
     command:
@@ -32,9 +32,9 @@ spec:
     - name: docker-sock
       hostPath:
         path: /var/run/docker.sock
-    - name: m2
+    - name: efs-jenkins
       persistentVolumeClaim:
-        claimName: m2
+        claimName: efs-jenkins
 """
 }
    }
