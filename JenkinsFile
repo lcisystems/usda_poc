@@ -34,7 +34,7 @@ spec:
         path: /var/run/docker.sock
     - name: efs-jenkins
       persistentVolumeClaim:
-        claimName: efs-jenkins
+        claimName: efs-pvc-jenkins
 """
 }
    }
