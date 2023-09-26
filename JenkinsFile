@@ -31,7 +31,7 @@ pipeline {
         // Dockerhub credentials to push and pull images. 
         DOCKERHUB_CREDENTIALS = "dockerhub"
     }
-	  tools
+	
   
  stages {
 	 stage('Execute Maven') {
