@@ -1,7 +1,7 @@
 pipeline {
       agent {
     kubernetes {
-      label 'Usda-demo'
+      label 'spring-petclinic-demo'
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
@@ -37,6 +37,8 @@ spec:
       persistentVolumeClaim:
         claimName: m2
 """
+}
+   }
     environment {
         //artifact deployment S3 bucket.    
         bucket = "confluence-assessments-task-4-enquizit-2022" 
