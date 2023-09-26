@@ -58,6 +58,26 @@ pipeline {
   }
 
   stage('Docker Build and Tag') {
+	  agent {
+        kubernetes {
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: maven
+                    image: maven:alpine
+                    command:
+                    - cat
+                    tty: true
+                  - name: docker
+                    image: docker:19.03-dind  # Use an image with Docker.
+                    command: ["sh", "-c", "sleep infinity"]  # Keep the container running.
+                    securityContext:
+                      privileged: true  # Necessary for DinD.
+            '''
+        }
+    }
 	
 
            steps {
@@ -71,7 +91,26 @@ pipeline {
      
   stage('Publish image to Docker Hub') {
 	
-     
+     agent {
+        kubernetes {
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: maven
+                    image: maven:alpine
+                    command:
+                    - cat
+                    tty: true
+                  - name: docker
+                    image: docker:19.03-dind  # Use an image with Docker.
+                    command: ["sh", "-c", "sleep infinity"]  # Keep the container running.
+                    securityContext:
+                      privileged: true  # Necessary for DinD.
+            '''
+        }
+    }
           
         steps {
 
