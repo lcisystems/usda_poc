@@ -32,9 +32,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = "dockerhub"
     }
 	  tools
-    {
-       maven "Maven"
-    }
+  
  stages {
 	 stage('Execute Maven') {
            steps {
@@ -80,7 +78,7 @@ pipeline {
 
            steps {
               
-                sh 'docker build -t samplewebapp:latest .' 
+                sh '/usr/bin/docker build -t samplewebapp:latest .'
                 sh 'docker tag samplewebapp ranaziauddin/samplewebapp:latest'
                 //sh 'docker tag samplewebapp nikhilnidhi/samplewebapp:$BUILD_NUMBER'
                
