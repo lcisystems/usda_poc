@@ -41,9 +41,7 @@ pipeline {
 
   stage('Docker Build and Tag') {
            steps {
-              	sh 'systemctl status docker'
-		sh 'systemctl start docker'
-		sh 'usermod -aG docker jenkins'
+    
                 sh 'docker build -t samplewebapp:latest .' 
                 sh 'docker tag samplewebapp ranaziauddin/samplewebapp:latest'
                 //sh 'docker tag samplewebapp nikhilnidhi/samplewebapp:$BUILD_NUMBER'
