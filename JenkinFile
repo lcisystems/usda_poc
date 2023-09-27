@@ -11,10 +11,7 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: docker
-            image: jenkins/inbound-agent
-            command:
-            - cat
+         
 
         '''
     }
@@ -35,11 +32,34 @@ pipeline {
       }
     }
     stage('Build-Docker-Image') {
-      steps {
-        container('docker') {
-          sh 'docker build -t ss69261/testing-image:latest .'
-        }
-      }
+      agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+kind: Pod
+metadata:
+  name: kaniko-demo
+spec:
+  containers:
+  - name: kaniko-demo
+    image: gcr.io/kaniko-project/executor:latest
+    args: ["--context=git://https://github.com/lcisystems/usda_poc.git",
+            "--destination=ranaziauddin/samplewebapp:latest",
+            "--dockerfile=Dockerfile"]
+    volumeMounts:
+      - name: kaniko-secret
+        mountPath: /kaniko/.docker
+  restartPolicy: Never
+  volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: reg-credentials
+        items:
+          - key: .dockerconfigjson
+            path: config.json
+         
+
+        '''
     }
     stage('Login-Into-Docker') {
       steps {
