@@ -70,6 +70,8 @@ pipeline {
   stage('Docker Build and Tag') {
       steps {
         container('docker') {
+           sh'groupadd docker'
+	   sh'usermod -aG docker docker-test'
            sh'dockerd'
            sh 'docker build -t samplewebapp:latest .' 
            sh 'docker tag samplewebapp ranaziauddin/samplewebapp:latest'
