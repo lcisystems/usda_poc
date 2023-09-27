@@ -12,9 +12,9 @@ pipeline {
             - cat
             tty: true
           - name: docker
-            image: docker:dind
+            image: amazonlinux:2
             command:
-            - cat
+            ["sh", "-c", "yum install -y docker && usermod -a -G docker ec2-user && systemctl enable docker.service && systemctl start docker.service"]
             tty: true
             securityContext:
               privileged: true
