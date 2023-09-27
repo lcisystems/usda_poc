@@ -49,6 +49,7 @@ pipeline {
       }
     }
         
+ 
   stage('Publish Artifact') {
 
 	steps {
@@ -109,3 +110,6 @@ pipeline {
 //         }
           
     }
+  }
+ }
+}
