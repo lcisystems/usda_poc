@@ -43,7 +43,7 @@ pipeline {
               containers:
               - name: kaniko-demo
                 image: gcr.io/kaniko-project/executor:latest
-                args: ["--context=git://https://github.com/lcisystems/usda_poc.git",
+                args: ["--context=git://github.com/lcisystems/usda_poc.git",
                         "--destination=ranaziauddin/samplewebapp:latest",
                         "--dockerfile=Dockerfile"]
                 volumeMounts:
