@@ -66,14 +66,13 @@ pipeline {
           
 
   stage('Docker Build and Tag') {
-	   stage('Login-Into-Docker') {
       steps {
         container('docker') {
           sh 'docker login -u <docker_username> -p <docker_password>'
       }
     }
-}
-  }  
+    }
+
   stage('Publish image to Docker Hub') {
 	
           
