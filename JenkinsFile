@@ -13,8 +13,7 @@ pipeline {
             tty: true
           - name: docker
             image: amazonlinux:2
-            command:
-            ["sh", "-c", "yum install -y docker && usermod -a -G docker ec2-user && systemctl enable docker.service && systemctl start docker.service"]
+            command: ["sh", "-c", "yum install -y docker && usermod -a -G docker ec2-user && systemctl enable docker.service && systemctl start docker.service"]
             tty: true
             securityContext:
               privileged: true
