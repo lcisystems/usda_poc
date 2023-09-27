@@ -61,26 +61,7 @@ spec:
 
         '''
     }
-    stage('Login-Into-Docker') {
-      steps {
-        container('docker') {
-          sh 'docker login -u ranaziauddin -p Software786#'
       }
     }
-    }
-     stage('Push-Images-Docker-to-DockerHub') {
-      steps {
-        container('docker') {
-          sh 'docker push ss69261/testing-image:latest'
-      }
-    }
-     }
-  }
-    post {
-      always {
-        container('docker') {
-          sh 'docker logout'
-      }
-      }
-    }
+}
 }
