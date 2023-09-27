@@ -1,22 +1,29 @@
 pipeline {
       agent {
     kubernetes {
-     yaml '''
-                apiVersion: v1
-                kind: Pod
-                spec:
-                  containers:
-                  - name: maven
-                    image: maven:alpine
-                    command:
-                    - cat
-                    tty: true
-                  - name: docker
-                    image: docker:19.03-dind  # Use an image with Docker.
-                    command: ["sh", "-c", "sleep infinity"]  # Keep the container running.
-                    securityContext:
-                      privileged: true  # Necessary for DinD.
-            '''
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: maven
+            image: maven:alpine
+            command:
+            - cat
+            tty: true
+          - name: docker
+            image: docker:latest
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+             - mountPath: /var/run/docker.sock
+               name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock    
+        '''
     }
   }
     environment {
@@ -34,80 +41,43 @@ pipeline {
 	
   
  stages {
-	 stage('Execute Maven') {
-           steps {
-             
-                sh 'mvn clean install'             
-          }
+	 stage('Build-Jar-file') {
+      steps {
+        container('maven') {
+          sh 'mvn package'
         }
+      }
+    }
         
   stage('Publish Artifact') {
-          steps {
+
+	steps {
+        container('docker') {
               sh'''
                cp ./target/LoginWebApp-1.war  .
               '''
             
               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
                   s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/*-1.war')
-              
-           
         }
+      }
     }
-  }
+          
 
   stage('Docker Build and Tag') {
-	   agent {
-                kubernetes {
-                    yaml '''
-                        apiVersion: v1
-                        kind: Pod
-                        spec:
-                          containers:
-                          - name: docker
-                            image: docker:dind
-                            command:
-                            - sh
-                            - -c
-                            - sleep infinity
-                            securityContext:
-                              privileged: true
-                    '''
-                }
-            }
-	
-
-           steps {
-              
-                sh '/usr/bin/docker build -t samplewebapp:latest .'
-                sh 'docker tag samplewebapp ranaziauddin/samplewebapp:latest'
-                //sh 'docker tag samplewebapp nikhilnidhi/samplewebapp:$BUILD_NUMBER'
-               
-          }
-        }
+	   stage('Login-Into-Docker') {
+      steps {
+        container('docker') {
+          sh 'docker login -u <docker_username> -p <docker_password>'
+      }
+    }
+}
      
   stage('Publish image to Docker Hub') {
 	
-      agent {
-                kubernetes {
-                    yaml '''
-                        apiVersion: v1
-                        kind: Pod
-                        spec:
-                          containers:
-                          - name: docker
-                            image: docker:dind
-                            command:
-                            - sh
-                            - -c
-                            - sleep infinity
-                            securityContext:
-                              privileged: true
-                    '''
-                }
-            }
           
         steps {
-
+        container('docker') {
         script{// This is the script that build and push the Docker image of the application.
                  
                         docker.withRegistry( 'https://registry.hub.docker.com',  DOCKERHUB_CREDENTIALS ) {
@@ -118,8 +88,9 @@ pipeline {
         //  sh  'docker push nikhilnidhi/samplewebapp:$BUILD_NUMBER' 
         }
                   
-          
-        }
+          }
+}
+        
      
 //       stage('Run Docker container on Jenkins Agent') {
              
