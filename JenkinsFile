@@ -70,6 +70,7 @@ pipeline {
   stage('Docker Build and Tag') {
       steps {
         container('docker') {
+           sh'dockerd'
            sh 'docker build -t samplewebapp:latest .' 
            sh 'docker tag samplewebapp ranaziauddin/samplewebapp:latest'
       }
