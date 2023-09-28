@@ -36,10 +36,8 @@ pipeline {
         container('kubectl') {
           withKubeConfig([credentialsId: "${KUBERNETES_CREDENTIALS}" ,
                     serverUrl: 'https://BF940C2362D0B0FBF08656E462353508.gr7.us-east-1.eks.amazonaws.com',
-                    clusterName: 'cluster-stack',
-                    namespace: 'team-cicd-controplane'
                     ]) {
-                 sh 'kubectl get pods'
+                 sh 'kubectl get pods namespace=team-cicd-controlplane'
         }
       }
     }
