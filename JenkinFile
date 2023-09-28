@@ -3,8 +3,8 @@ pipeline {
     kubernetes {
        yaml '''
 
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
   name: redis
 spec:
