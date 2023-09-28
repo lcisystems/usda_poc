@@ -37,9 +37,9 @@ pipeline {
     kubernetes {
       yaml '''
        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
+       kind: Pod
+       spec:
+        containers:
           - name: maven
             image: maven:alpine
             command:
