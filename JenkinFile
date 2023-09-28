@@ -42,10 +42,10 @@ pipeline {
         name: dind
         containers:
         - name: maven
-            image: maven:alpine
-            command:
-            - cat
-            tty: true
+          image: maven:alpine
+          command:
+           - cat
+          tty: true
         - name: dind
           image: docker:18.05-dind
           securityContext:
