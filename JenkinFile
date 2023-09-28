@@ -1,5 +1,43 @@
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+       YAML '''
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      volumes:
+      - name: kubectl
+        emptyDir: {}
+      initContainers:
+      - name: install-kubectl
+        image: allanlei/kubectl
+        volumeMounts:
+        - name: kubectl
+          mountPath: /data
+        command: ["cp", "/usr/local/bin/kubectl", "/data/kubectl"]
+      containers:
+      - name: redis
+        image: redis:4.0.7-alpine
+        command: ["redis-server"]
+        volumeMounts:
+        - name: kubectl
+          subPath: kubectl
+          mountPath: /usr/local/bin/kubectl
+       '''
+    }
+  }
 
   environment {
         //artifact deployment S3 bucket.    
