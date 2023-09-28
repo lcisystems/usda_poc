@@ -79,7 +79,7 @@ pipeline {
         container('maven') {
               script{
              sh'''
-              /kaniko/executor/
+              docker build -t app .
               '''
 }
         }
