@@ -2,39 +2,19 @@ pipeline {
   agent {
     kubernetes {
        yaml '''
-
 apiVersion: v1
-kind: Pod
+kind: Pod 
 metadata:
-  name: redis
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: redis
-  template:
-    metadata:
-      labels:
-        app: redis
-    spec:
-      volumes:
-      - name: kubectl
-        emptyDir: {}
-      initContainers:
-      - name: install-kubectl
-        image: allanlei/kubectl
-        volumeMounts:
-        - name: kubectl
-          mountPath: /data
-        command: ["cp", "/usr/local/bin/kubectl", "/data/kubectl"]
-      containers:
-      - name: redis
-        image: redis:4.0.7-alpine
-        command: ["redis-server"]
-        volumeMounts:
-        - name: kubectl
-          subPath: kubectl
-          mountPath: /usr/local/bin/kubectl
+  name: kubectl
+  namespace: team-cicd-controlplane
+spec:   
+  containers:
+  - name: kubectl
+    image: alpine/k8s:1.25.14
+    command:
+      - cat
+    tty: true
+
        '''
     }
   }
