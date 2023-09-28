@@ -48,10 +48,8 @@ pipeline {
       agent {
     kubernetes {
       yaml '''
-        apiVersion: v1
+       apiVersion: v1
         kind: Pod
-        metadata:
-          name: kaniko-demo
         spec:
           containers:
           - name: maven
@@ -59,19 +57,19 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: kaniko-demo
-            image: gcr.io/kaniko-project/executor:latest
+            env:
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375
+          - name: dind
+            image: docker:18.05-dind
+            securityContext:
+              privileged: true
             volumeMounts:
-              - name: kaniko-secret
-                mountPath: /kaniko/.docker
-          restartPolicy: Never
+              - name: dind-storage
+                mountPath: /var/lib/docker
           volumes:
-            - name: kaniko-secret
-              secret:
-                secretName: reg-credentials
-                items:
-                  - key: .dockerconfigjson
-                    path: config.json
+            - name: dind-storage
+              emptyDir: {}
          
 
         '''
