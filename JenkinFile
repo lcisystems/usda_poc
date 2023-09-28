@@ -39,7 +39,6 @@ pipeline {
         apiVersion: v1
         kind: Pod 
         metadata: 
-        name: dind
         containers:
         - name: maven
           image: maven:alpine
