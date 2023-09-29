@@ -3,17 +3,34 @@ pipeline {
     kubernetes {
       yaml '''
         apiVersion: v1
-        kind: Pod 
+        kind: Pod
         metadata:
-          name: kubectl
-          namespace: team-cicd-controlplane
-        spec:   
+          name: build-server
+        spec:
           containers:
-          - name: kubectl
-            image: alpine/k8s:1.25.14
-            command:
-              - cat
-            tty: true
+            - name: maven
+              image: maven:alpine
+              volumeMounts:
+                - name: efs-volume
+                  mountPath: /home/jenkins_home/.m2  
+            - name: kubectl
+              image: alpine/k8s:1.25.14
+              command:
+                - cat
+              tty: true
+            - name: dind
+              image: docker:20-dind
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: dind-storage
+                  mountPath: /var/lib/docker
+          volumes:
+            - name: efs-volume
+              persistentVolumeClaim:
+                claimName: efs-pvc 
+            - name: dind-storage
+              emptyDir: {}
         '''    
     }
   }
