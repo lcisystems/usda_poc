@@ -48,6 +48,13 @@ pipeline {
         KUBERNETES_CREDENTIALS  = 'kubeernetes-seccret'
     }
   stages {
+    stage('Build-Jar-file') {
+      steps {
+        container('maven') {
+          sh 'mvn package'
+        }
+      }
+    }
     stage('Run Command') {
       steps {
         container('kubectl') {
