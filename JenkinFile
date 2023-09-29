@@ -55,7 +55,7 @@ pipeline {
         }
       }
     }
-  stage('Publish Artifact') {
+  stage('Publish Artifact To S3') {
           steps {
           container('maven') {
               sh'''
@@ -63,10 +63,28 @@ pipeline {
               '''
             
               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
-                  s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/*-1.war')
+                  s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war')
         }
             
               
+              
+           
+        }
+    }
+  }
+stage('Retrive Artifact To S3') {
+          steps {
+          container('dind') {
+           
+            
+              withAWS(region:'us-east-1', credentials: "${aws_credential}") {
+                  s3s3Download(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'.', force: true)
+             sh '''
+              docker 
+              '''
+        }
+            
+               
               
            
         }
