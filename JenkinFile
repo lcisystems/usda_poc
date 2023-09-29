@@ -78,7 +78,7 @@ stage('Retrive Artifact To S3') {
            
             
               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
-                  s3Download(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'.', force: true)
+                  s3Download(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war', force: true)
              sh '''
                docker build -t samplewebapp:latest .
                docker tag samplewebapp ranaziauddin/samplewebapp:latest
