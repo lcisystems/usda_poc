@@ -117,13 +117,17 @@ stage('Publish To DockerHub') {
     }
   }
 
-    stage('Run Command') {
+    stage('Deploy App') {
       steps {
         container('kubectl') {
           withKubeConfig([credentialsId: "${KUBERNETES_CREDENTIALS}" ,
                     serverUrl: 'https://BF940C2362D0B0FBF08656E462353508.gr7.us-east-1.eks.amazonaws.com',
                     ]) {
                  sh 'kubectl get pods --namespace=team-cicd-controlplane'
+                 sh 'kubectl apply -f mysql-pvc.yaml --namespace=team-dev'
+                 sh 'kubectl apply -f mysql-deployment.yaml --namespace=team-dev'
+                 sh 'kubectl apply -f phpmyadmin-deployment.yaml --namespace=team-dev'
+                 sh 'kubectl apply -f tomcat-deployment.yaml --namespace=team-dev'
         }
       }
     }
