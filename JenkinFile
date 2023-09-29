@@ -12,7 +12,7 @@ pipeline {
               image: maven:alpine
               volumeMounts:
                 - name: efs-volume
-                  mountPath: /home/jenkins_home/.m2  
+                  mountPath: /.m2  
             - name: kubectl
               image: alpine/k8s:1.25.14
               command:
