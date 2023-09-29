@@ -99,7 +99,7 @@ stage('Buid Docker Image') {
                docker build -t samplewebapp:latest .
                docker tag samplewebapp ranaziauddin/samplewebapp:latest
               '''
-        }          
+                  
         }
     }
   }
