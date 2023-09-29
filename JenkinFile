@@ -72,7 +72,7 @@ pipeline {
         }
     }
   }
-stage('Retrive Artifact To S3') {
+stage('Retrive Artifact from S3') {
           steps {
           container('dind') {
            
@@ -91,6 +91,19 @@ stage('Retrive Artifact To S3') {
         }
     }
   }
+
+stage('Buid Docker Image') {
+          steps {
+          container('dind') {
+             sh '''
+               docker build -t samplewebapp:latest .
+               docker tag samplewebapp ranaziauddin/samplewebapp:latest
+              '''
+        }          
+        }
+    }
+  }
+
     stage('Run Command') {
       steps {
         container('kubectl') {
