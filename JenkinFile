@@ -104,7 +104,10 @@ stage('Retrive Artifact from Nexus') {
            
             
             withCredentials([usernameColonPassword(credentialsId: 'nexus-secret', variable: 'NEXUS_CREDENTIAL_ID')]) {
-              sh script: 'curl -u ${NEXUS_CREDENTIAL_ID} -o your_file.png "http://localhost:8083/repository/nexus-rep0/freeallianceInnovationLab/LoginWebApp/1/LoginWebApp-1.war"'
+              sh'''
+              apk add curl
+              curl -u ${NEXUS_CREDENTIAL_ID} -o your_file.png "http://localhost:8083/repository/nexus-rep0/freeallianceInnovationLab/LoginWebApp/1/LoginWebApp-1.war"
+              '''
         }
     }
         }
