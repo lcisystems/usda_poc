@@ -46,6 +46,11 @@ pipeline {
         // Dockerhub credentials to push and pull images. 
         DOCKERHUB_CREDENTIALS = "dockerhub"
         KUBERNETES_CREDENTIALS  = 'kubeernetes-seccret'
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "http://a674b70ccfafe4ef7a728a2685dd5fba-1506899315.us-east-1.elb.amazonaws.com:8081/:8081"
+        NEXUS_REPOSITORY = "nexus-rep0"
+        NEXUS_CREDENTIAL_ID = "nexus-user-credentials"
     }
   stages {
     stage('Build-Jar-file') {
@@ -55,6 +60,43 @@ pipeline {
         }
       }
     }
+  stage("Publish to Nexus Repository Manager") {
+            steps {
+            container('maven') {
+                script {
+                    pom = readMavenPom file: "pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                        nexusArtifactUploader(
+                            nexusVersion: NEXUS_VERSION,
+                            protocol: NEXUS_PROTOCOL,
+                            nexusUrl: NEXUS_URL,
+                            groupId: pom.groupId,
+                            version: pom.version,
+                            repository: NEXUS_REPOSITORY,
+                            credentialsId: NEXUS_CREDENTIAL_ID,
+                            artifacts: [
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: artifactPath,
+                                type: pom.packaging],
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: "pom.xml",
+                                type: "pom"]
+                            ]
+                        );
+                    } else {
+                        error "*** File: ${artifactPath}, could not be found";
+                    }
+                }
+            }
+        }
+     }
   stage('Publish Artifact To S3') {
           steps {
           container('maven') {
