@@ -108,6 +108,7 @@ stage('Retrive Artifact from Nexus') {
         }
     }
         }
+}
      
   stage('Publish Artifact To S3') {
           steps {
