@@ -205,4 +205,5 @@ stage('Publish To DockerHub') {
     }
   }
 }
+}
 
