@@ -7,15 +7,15 @@
   <version>1.0.0</version>
   <name>LoginWebApp Maven Webapp</name>
   <url>http://maven.apache.org</url>
-  <scm>
-    <connection>scm:git:https://github.com/lcisystems/usda_poc.git</connection>
-    <developerConnection>scm:git:https://github.com/lcisystems/usda_poc.git</developerConnection>
-    <url>https://github.com/lcisystems/usda_poc.git</url>
-  </scm>
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
+  <scm>
+    <connection>scm:git:https://github.com/lcisystems/usda_poc.git</connection>
+    <developerConnection>scm:git:https://github.com/lcisystems/usda_poc.git</developerConnection>
+    <url>https://github.com/lcisystems/usda_poc.git</url>
+</scm>
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>
