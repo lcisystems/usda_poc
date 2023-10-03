@@ -63,7 +63,8 @@ pipeline {
                     
 
                     // Perform a release with the Maven Release Plugin
-                    sh "mvn release:perform"
+                    sh "mvn release:prepare release:perform -DconnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git -DdeveloperConnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git
+"
                 }
             }
         }
