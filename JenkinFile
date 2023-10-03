@@ -59,7 +59,7 @@ pipeline {
           
                 script {
                     // Ensure Maven is installed and available on the PATH
-                    def mavenHome = tool name: 'Maven', type: 'Tool'
+                    
                     def mvn = "${mavenHome}/bin/mvn"
 
                     // Perform a release with the Maven Release Plugin
