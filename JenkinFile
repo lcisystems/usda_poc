@@ -60,10 +60,10 @@ pipeline {
                 script {
                     // Ensure Maven is installed and available on the PATH
                     
-                    def mvn = "${mavenHome}/bin/mvn"
+                    
 
                     // Perform a release with the Maven Release Plugin
-                    sh "${mvn} release:prepare release:perform"
+                    sh "mvn release:prepare release:perform"
                 }
             }
         }
