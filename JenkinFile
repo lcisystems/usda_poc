@@ -54,8 +54,9 @@ pipeline {
     }
   stages {
     stage('Maven Release') {
+          steps {
           container('maven') {
-            steps {
+          
                 script {
                     // Ensure Maven is installed and available on the PATH
                     def mavenHome = tool name: 'Maven', type: 'Tool'
