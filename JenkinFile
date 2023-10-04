@@ -193,7 +193,7 @@ stage('Retrive Artifact from Nexus') {
             //    docker build -t samplewebapp:latest .
             //    docker tag samplewebapp ranaziauddin/samplewebapp:latest
             //   '''
-              dockerImage = docker.build "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" + ":latest"
+              dockerImage = docker.build REPOSITORY_URI + ":latest"
                   
         }
     }
