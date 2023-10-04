@@ -64,7 +64,7 @@ pipeline {
       steps {
         container('maven') {
           sh '''
-            mvn -B -DskipTests clean package -D "${v}"
+            mvn -B -DskipTests clean package -D v=${BUILD_NUMBER}
           '''
         }
       }
