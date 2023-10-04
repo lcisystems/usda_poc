@@ -189,21 +189,23 @@ stage('Retrive Artifact from Nexus') {
   stage('Buid Docker Image') {
           steps {
           container('dind') {
-             sh '''
-               docker build -t samplewebapp:latest .
-               docker tag samplewebapp ranaziauddin/samplewebapp:latest
-              '''
+            //  sh '''
+            //    docker build -t samplewebapp:latest .
+            //    docker tag samplewebapp ranaziauddin/samplewebapp:latest
+            //   '''
+              dockerImage = docker.build "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" + ":latest"
                   
         }
     }
   }
-stage('Publish To AWS ECR') {
+stage('Publish To DockerHub') {
           steps {
           container('dind') {
              script{// This is the script that build and push the Docker image of the application.
                  
-                        docker.withRegistry( "https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}",  "ecr:${AWS_DEFAULT_REGION}:" + aws_credential ) {
-                        def app = docker.build("ranaziauddin/samplewebapp:latest", '.').push()
+                docker.withRegistry( "https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}",  "ecr:${AWS_DEFAULT_REGION}:" + aws_credential ) {
+                  dockerImage.push()
+                        
                }           
            }
                   
