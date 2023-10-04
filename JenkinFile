@@ -189,6 +189,7 @@ stage('Retrive Artifact from Nexus') {
   stage('Buid Docker Image') {
           steps {
           container('dind') {
+            script {
             //  sh '''
             //    docker build -t samplewebapp:latest .
             //    docker tag samplewebapp ranaziauddin/samplewebapp:latest
@@ -198,7 +199,8 @@ stage('Retrive Artifact from Nexus') {
         }
     }
   }
-stage('Publish To DockerHub') {
+}  
+  stage('Publish To DockerHub') {
           steps {
           container('dind') {
              script{// This is the script that build and push the Docker image of the application.
