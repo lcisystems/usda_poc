@@ -56,13 +56,14 @@ pipeline {
         IMAGE_REPO_NAME="usda_poc"
         IMAGE_TAG="latest"
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+        v=${BUILD_NUMBER}
     }
 
   stages {
     stage('Build-Jar-file') {
       steps {
         container('maven') {
-          sh 'mvn -B -DskipTests clean package -D v=${BUILD_NUMBER}'
+          sh 'mvn -B -DskipTests clean package -D ${v}'
         }
       }
     }
