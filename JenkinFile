@@ -59,6 +59,22 @@ pipeline {
     }
 
   stages {
+    stage('Maven Release') {
+          steps {
+          container('maven') {
+          
+                script {
+                    // Ensure Maven is installed and available on the PATH
+                    
+                    sh "apk add git"
+
+                    // Perform a release with the Maven Release Plugin
+                    sh "mvn release:perform -DconnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git -DdeveloperConnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git"
+
+                }
+            }
+        }
+     }
     stage('Build-Jar-file') {
       steps {
         container('maven') {
@@ -155,37 +171,37 @@ stage('Retrive Artifact from Nexus') {
 //         }
 //     }
 //   }
-    stage('Logging into AWS ECR') {
-      steps {
-        container('dind') {
-          script {
-            sh "aws ecr get-login-password - region ${AWS_DEFAULT_REGION} | docker login - username AWS - password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-        }
-      }
-    }
-  }
- // Building Docker images
-    stage('Building image') {
-      steps{
-        container('dind'){
-        script {
-          dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-        }
-      }
-    }
-  }
+  //   stage('Logging into AWS ECR') {
+  //     steps {
+  //       container('dind') {
+  //         script {
+  //           sh "aws ecr get-login-password - region ${AWS_DEFAULT_REGION} | docker login - username AWS - password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+  //       }
+  //     }
+  //   }
+  // }
+//  // Building Docker images
+//     stage('Building image') {
+//       steps{
+//         container('dind'){
+//         script {
+//           dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+//         }
+//       }
+//     }
+//   }
  
- // Uploading Docker images into AWS ECR
-    stage('Pushing to ECR') {
-      steps{ 
-        container('dind'){
-        script {
-          sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
-          sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-        }
-      }
-    }
-  }
+//  // Uploading Docker images into AWS ECR
+//     stage('Pushing to ECR') {
+//       steps{ 
+//         container('dind'){
+//         script {
+//           sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
+//           sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+//         }
+//       }
+//     }
+//   }
   stage('Buid Docker Image') {
           steps {
           container('dind') {
@@ -202,7 +218,7 @@ stage('Publish To DockerHub') {
           container('dind') {
              script{// This is the script that build and push the Docker image of the application.
                  
-                        docker.withRegistry( 'https://registry.hub.docker.com',  DOCKERHUB_CREDENTIALS ) {
+                        docker.withRegistry( "https://${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}",  "ecr:${AWS_DEFAULT_REGION}:" + aws_credential ) {
                         def app = docker.build("ranaziauddin/samplewebapp:latest", '.').push()
                }           
            }
