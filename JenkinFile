@@ -62,7 +62,7 @@ pipeline {
     stage('Build-Jar-file') {
       steps {
         container('maven') {
-          sh 'mvn package'
+          sh 'mvn -B -DskipTests clean package -D v=${BUILD_NUMBER}'
         }
       }
     }
