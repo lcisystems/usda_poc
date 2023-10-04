@@ -73,7 +73,16 @@ pipeline {
             steps {
             container('maven') {
                     script {
-                    def pom = readMavenPom(file: 'pom.xml');
+                    def pom = readMavenPom file: 'pom.xml'
+
+                    pom_version_array = pom.version.split('\\.')
+                    
+                    // You can choose any part of the version you want to update
+                    pom_version_array[1] = "${pom_version_array[1]}".toInteger() + 1
+                    
+                    pom.version = pom_version_array.join('.')
+                    
+                    writeMavenPom model: pom
               
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
