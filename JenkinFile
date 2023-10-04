@@ -78,7 +78,7 @@ pipeline {
                     pom_version_array = pom.version.split('\\.')
                     
                     // You can choose any part of the version you want to update
-                    pom_version_array[1] = "${pom_version_array[1]}".toInteger() + 1
+                    pom_version_array[1] = "${BUILD_NUMBER}"
                     
                     pom.version = pom_version_array.join('.')
                     
