@@ -59,22 +59,6 @@ pipeline {
     }
 
   stages {
-    stage('Maven Release') {
-          steps {
-          container('maven') {
-          
-                script {
-                    // Ensure Maven is installed and available on the PATH
-                    
-                    sh "apk add git"
-
-                    // Perform a release with the Maven Release Plugin
-                    sh "mvn release:perform -DconnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git -DdeveloperConnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git"
-
-                }
-            }
-        }
-     }
     stage('Build-Jar-file') {
       steps {
         container('maven') {
