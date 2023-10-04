@@ -4,7 +4,7 @@
   <groupId>freeallianceInnovationLab</groupId>
   <artifactId>LoginWebApp</artifactId>
   <packaging>war</packaging>
-  <version>1.0.0</version>
+  <version>${v}.0.0</version>
   <name>LoginWebApp Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
