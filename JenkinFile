@@ -213,7 +213,7 @@ stage('Retrive Artifact from Nexus') {
         }
     }
   }
-stage('Publish To DockerHub') {
+stage('Publish To AWS ECR') {
           steps {
           container('dind') {
              script{// This is the script that build and push the Docker image of the application.
