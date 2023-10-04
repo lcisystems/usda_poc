@@ -51,8 +51,30 @@ pipeline {
         NEXUS_URL = "a674b70ccfafe4ef7a728a2685dd5fba-1506899315.us-east-1.elb.amazonaws.com:8081"
         NEXUS_REPOSITORY = "nexus-rep0"
         NEXUS_CREDENTIAL_ID = "nexus-secret"
+        AWS_ACCOUNT_ID="665693299603"
+        AWS_DEFAULT_REGION="us-east-1" 
+        IMAGE_REPO_NAME="usda_poc"
+        IMAGE_TAG="latest"
+        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
     }
+
   stages {
+    stage('Maven Release') {
+          steps {
+          container('maven') {
+          
+                script {
+                    // Ensure Maven is installed and available on the PATH
+                    
+                    sh "apk add git"
+
+                    // Perform a release with the Maven Release Plugin
+                    sh "mvn release:perform -DconnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git -DdeveloperConnectionUrl=scm:git:https://github.com/lcisystems/usda_poc.git"
+
+                }
+            }
+        }
+     }
     stage('Build-Jar-file') {
       steps {
         container('maven') {
@@ -113,44 +135,74 @@ stage('Retrive Artifact from Nexus') {
         }
 }
      
-  stage('Publish Artifact To S3') {
-          steps {
-          container('maven') {
-              sh'''
-               cp ./target/LoginWebApp-1.war  .
-              '''
+  // stage('Publish Artifact To S3') {
+  //         steps {
+  //         container('maven') {
+  //             sh'''
+  //              cp ./target/LoginWebApp-1.war  .
+  //             '''
             
-              withAWS(region:'us-east-1', credentials: "${aws_credential}") {
-                  s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war')
-        }
+  //             withAWS(region:'us-east-1', credentials: "${aws_credential}") {
+  //                 s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war')
+  //       }
             
               
               
            
-        }
-    }
-  }
-stage('Retrive Artifact from S3') {
-          steps {
-          container('dind') {
+  //       }
+  //   }
+  // }
+// stage('Retrive Artifact from S3') {
+//           steps {
+//           container('dind') {
            
             
-              withAWS(region:'us-east-1', credentials: "${aws_credential}") {
-                  s3Download(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war', force: true)
-             sh '''
-               docker build -t samplewebapp:latest .
-               docker tag samplewebapp ranaziauddin/samplewebapp:latest
-              '''
-        }
+//               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
+//                   s3Download(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war', force: true)
+//              sh '''
+//                docker build -t samplewebapp:latest .
+//                docker tag samplewebapp ranaziauddin/samplewebapp:latest
+//               '''
+//         }
             
                
               
            
+//         }
+//     }
+//   }
+    stage('Logging into AWS ECR') {
+      steps {
+        container('dind') {
+          script {
+            sh "aws ecr get-login-password - region ${AWS_DEFAULT_REGION} | docker login - username AWS - password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
         }
+      }
     }
   }
-
-stage('Buid Docker Image') {
+ // Building Docker images
+    stage('Building image') {
+      steps{
+        container('dind'){
+        script {
+          dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
+      }
+    }
+  }
+ 
+ // Uploading Docker images into AWS ECR
+    stage('Pushing to ECR') {
+      steps{ 
+        container('dind'){
+        script {
+          sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
+          sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+        }
+      }
+    }
+  }
+  stage('Buid Docker Image') {
           steps {
           container('dind') {
              sh '''
@@ -192,4 +244,3 @@ stage('Publish To DockerHub') {
   }
 }
 }
-
