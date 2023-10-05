@@ -184,8 +184,7 @@ pipeline {
           withKubeConfig([credentialsId: "${KUBERNETES_CREDENTIALS}" ,
                     serverUrl: 'https://BF940C2362D0B0FBF08656E462353508.gr7.us-east-1.eks.amazonaws.com',
                     ]) {
-                 sh 
-                 '''
+                 sh '''
                  kubectl create secret docker-registry regcred || true \
                   --docker-server=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com \
                   --docker-username=AWS \
