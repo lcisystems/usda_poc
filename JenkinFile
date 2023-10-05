@@ -196,7 +196,6 @@ pipeline {
                  kubectl apply -f mysql-deployment.yaml --namespace=team-dev
                  kubectl apply -f phpmyadmin-deployment.yaml --namespace=team-dev
                  kubectl apply -f tomcat-deployment.yaml --namespace=team-dev
-
                  ''' 
                  
               }
