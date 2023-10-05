@@ -105,88 +105,19 @@ pipeline {
             }
         }
      }
-stage('Retrive Artifact from Nexus') {
+  stage('Retrive Artifact from Nexus') {
           steps {
           container('dind') {
-           
-            
             withCredentials([usernameColonPassword(credentialsId: 'nexus-secret', variable: 'NEXUS_CREDENTIAL_ID')]) {
               sh'''
               apk add curl
               curl -u ${NEXUS_CREDENTIAL_ID} -o your_file.png "http://${NEXUS_URL}/repository/nexus-rep0/freeallianceInnovationLab/LoginWebApp/1/LoginWebApp-1.war"
               '''
+            }
+          }
         }
-    }
-        }
-}
+      }
      
-  // stage('Publish Artifact To S3') {
-  //         steps {
-  //         container('maven') {
-  //             sh'''
-  //              cp ./target/LoginWebApp-1.war  .
-  //             '''
-            
-  //             withAWS(region:'us-east-1', credentials: "${aws_credential}") {
-  //                 s3Upload(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war')
-  //       }
-            
-              
-              
-           
-  //       }
-  //   }
-  // }
-// stage('Retrive Artifact from S3') {
-//           steps {
-//           container('dind') {
-           
-            
-//               withAWS(region:'us-east-1', credentials: "${aws_credential}") {
-//                   s3Download(file:'LoginWebApp-1.war', bucket:'artifact-bucket-665693299603-us-east-1', path:'target/LoginWebApp-1.war', force: true)
-//              sh '''
-//                docker build -t samplewebapp:latest .
-//                docker tag samplewebapp ranaziauddin/samplewebapp:latest
-//               '''
-//         }
-            
-               
-              
-           
-//         }
-//     }
-//   }
-  //   stage('Logging into AWS ECR') {
-  //     steps {
-  //       container('dind') {
-  //         script {
-  //           sh "aws ecr get-login-password - region ${AWS_DEFAULT_REGION} | docker login - username AWS - password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-  //       }
-  //     }
-  //   }
-  // }
-//  // Building Docker images
-//     stage('Building image') {
-//       steps{
-//         container('dind'){
-//         script {
-//           dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-//         }
-//       }
-//     }
-//   }
- 
-//  // Uploading Docker images into AWS ECR
-//     stage('Pushing to ECR') {
-//       steps{ 
-//         container('dind'){
-//         script {
-//           sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"
-//           sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"
-//         }
-//       }
-//     }
-//   }
   stage('Buid Docker Image') {
           steps {
           container('dind') {
@@ -219,6 +150,31 @@ stage('Retrive Artifact from Nexus') {
     stage('Deploy App') {
       steps {
         container('kubectl') {
+          withCredentials([[
+                        $class: 'FileBinding',
+                        credentialsId: 's3-profile',
+                        variable: 'AWS_ACCESS_KEY',
+                        credentialsType: 'aws-access-key',
+                        fileVariable: 'AWS_CREDENTIALS_FILE'
+                    ]]) {
+                        def awsCredentials = readFile("${AWS_CREDENTIALS_FILE}")
+                        def awsLines = awsCredentials.readLines()
+                        def accessKeyIdLine = awsLines.find { it =~ /aws_access_key_id/ }
+                        def secretAccessKeyLine = awsLines.find { it =~ /aws_secret_access_key/ }
+                        
+                        AWS_ACCESS_KEY = accessKeyIdLine.split("=")[1].trim()
+                        AWS_SECRET_KEY = secretAccessKeyLine.split("=")[1].trim()
+                        
+                        echo "AWS Access Key ID: ${AWS_ACCESS_KEY}"
+                        echo "AWS Secret Access Key: ${AWS_SECRET_KEY}"
+        }
+      }
+    }
+  }
+
+    stage('Deploy App') {
+      steps {
+        container('kubectl') {
           withKubeConfig([credentialsId: "${KUBERNETES_CREDENTIALS}" ,
                     serverUrl: 'https://BF940C2362D0B0FBF08656E462353508.gr7.us-east-1.eks.amazonaws.com',
                     ]) {
@@ -227,9 +183,9 @@ stage('Retrive Artifact from Nexus') {
                  sh 'kubectl apply -f mysql-deployment.yaml --namespace=team-dev'
                  sh 'kubectl apply -f phpmyadmin-deployment.yaml --namespace=team-dev'
                  sh 'kubectl apply -f tomcat-deployment.yaml --namespace=team-dev'
+              }
+            }
+          }
         }
       }
     }
-  }
-}
-}
