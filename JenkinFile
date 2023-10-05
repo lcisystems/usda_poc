@@ -184,8 +184,9 @@ pipeline {
           withKubeConfig([credentialsId: "${KUBERNETES_CREDENTIALS}" ,
                     serverUrl: 'https://BF940C2362D0B0FBF08656E462353508.gr7.us-east-1.eks.amazonaws.com',
                     ]) {
-                 sh '''
-                 kubectl create secret docker-registry regcred \
+                 sh 
+                 '''
+                 kubectl create secret docker-registry regcred || true \
                   --docker-server=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com \
                   --docker-username=AWS \
                   --docker-password=$(aws ecr get-login-password) \
@@ -195,6 +196,7 @@ pipeline {
                  kubectl apply -f mysql-deployment.yaml --namespace=team-dev
                  kubectl apply -f phpmyadmin-deployment.yaml --namespace=team-dev
                  kubectl apply -f tomcat-deployment.yaml --namespace=team-dev
+
                  ''' 
                  
               }
