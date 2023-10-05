@@ -147,7 +147,7 @@ pipeline {
     }
   }
 
-    stage('Deploy App') {
+    stage('Add AWS Credentials') {
       steps {
         container('kubectl') {
           script {
