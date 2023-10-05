@@ -150,6 +150,7 @@ pipeline {
     stage('Deploy App') {
       steps {
         container('kubectl') {
+          script {
           withCredentials([[
                         $class: 'FileBinding',
                         credentialsId: 's3-profile',
@@ -167,10 +168,11 @@ pipeline {
                         
                         echo "AWS Access Key ID: ${AWS_ACCESS_KEY}"
                         echo "AWS Secret Access Key: ${AWS_SECRET_KEY}"
-        }
-      }
-    }
-  }
+                      }
+                    }
+                  }
+                }
+              }
 
     stage('Deploy App') {
       steps {
