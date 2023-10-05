@@ -169,6 +169,7 @@ pipeline {
                             aws configure set aws_secret_access_key "${AWS_SECRET_KEY}"
 
                             echo "AWS credentials updated successfully."
+                            aws s3 ls 
                         '''
 
                       }
