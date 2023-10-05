@@ -151,21 +151,21 @@ pipeline {
       steps {
         container('kubectl') {
           script {
-              // Define the AWS_ACCESS_KEY and AWS_SECRET_KEY variables
-                    def AWS_ACCESS_KEY
-                    def AWS_SECRET_KEY
-                    
-                    withAWS(credentials: 's3-profile') {
-                        AWS_ACCESS_KEY = awsAccessKey()
-                        AWS_SECRET_KEY = awsSecretKey()
-                    }
-                    
-                    echo "AWS Access Key ID: ${AWS_ACCESS_KEY}"
-                    echo "AWS Secret Access Key: ${AWS_SECRET_KEY}"
+              withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 's3-profile',
+                        accessKeyVariable: 'AWS_ACCESS_KEY',
+                        secretKeyVariable: 'AWS_SECRET_KEY'
+                    ]]) {
+                        // The AWS_ACCESS_KEY and AWS_SECRET_KEY environment variables
+                        // now contain the AWS credentials
+                        echo "AWS Access Key ID: ${env.AWS_ACCESS_KEY}"
+                        echo "AWS Secret Access Key: ${env.AWS_SECRET_KEY}"
                       }
                     }
                   }
                 }
+              }
               
 
     stage('Deploy App') {
