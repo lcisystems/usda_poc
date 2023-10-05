@@ -154,9 +154,7 @@ pipeline {
               withCredentials([[
                             $class: 'FileBinding',
                             credentialsId: 's3-profile',
-                            variable: 'AWS_ACCESS_KEY',
-                            credentialsType: 'aws-access-key',
-                            fileVariable: 'AWS_CREDENTIALS_FILE'
+                            variable: 'AWS_CREDENTIALS_FILE'
                         ]]) {
                             def awsCredentials = readFile("${AWS_CREDENTIALS_FILE}")
                             def awsLines = awsCredentials.readLines()
