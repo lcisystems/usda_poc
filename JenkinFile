@@ -123,6 +123,7 @@ pipeline {
           container('dind') {
             script {
             //  sh '''
+                  ls -la
             //    docker build -t samplewebapp:latest .
             //    docker tag samplewebapp ranaziauddin/samplewebapp:latest
             //   '''
