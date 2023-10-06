@@ -63,6 +63,7 @@ pipeline {
       steps {
         container('maven') {
           withSonarQubeEnv(installationName: 'Sonar', credentialsId: 'sonarqube-secret') {
+                sh 'java --version'
                 sh 'mvn clean package sonar:sonar'
           }
         }
