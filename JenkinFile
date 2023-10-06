@@ -59,6 +59,14 @@ pipeline {
         v="${BUILD_NUMBER}"
     }
   stages {
+    stage('Code-Review') {
+      steps {
+        container('maven') {
+          withSonarQubeEnv(installationName: 'Sonar', credentialsId: 'sonarqube-secret') {
+                sh 'mvn clean package sonar:sonar'
+        }
+      }
+    }
     stage('Build-Jar-file') {
       steps {
         container('maven') {
