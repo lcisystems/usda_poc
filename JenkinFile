@@ -64,20 +64,12 @@ pipeline {
         container('maven') {
           withSonarQubeEnv(installationName: 'Sonar', credentialsId: 'sonarqube-secret') {
                 sh 'java -version'
-                sh 'mvn clean package sonar:sonar'
+                sh 'mvn -B -DskipTests clean package -Dv=${BUILD_NUMBER} sonar:sonar'
           }
         }
       }
     }
-    stage('Build-Jar-file') {
-      steps {
-        container('maven') {
-          sh '''
-            mvn -B -DskipTests clean package -Dv=${BUILD_NUMBER}
-          '''
-        }
-      }
-    }
+    
   stage("Publish to Nexus Repository Manager") {
             steps {
             container('maven') {
