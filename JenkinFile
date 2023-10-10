@@ -8,6 +8,11 @@ pipeline {
           name: build-server
         spec:
           containers:
+            - name: notation_cli
+              image: 665693299603.dkr.ecr.us-east-1.amazonaws.com/notation_cli:latest
+              command:
+                - cat
+              tty: true
             - name: maven
               image: maven:3-openjdk-17
               command: 
